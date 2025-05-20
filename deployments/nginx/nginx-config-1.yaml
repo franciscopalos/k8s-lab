@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config-1
+data:
+  default.conf: |
+    server {
+      
+      listen 80;
+      server_name nginx1.local;
+      location / {
+        return 301  https://prod.kb.gcp.elastic-cloud.com;
+      }
+    }

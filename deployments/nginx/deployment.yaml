@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-container-1
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: config-volume-1
+          mountPath: /etc/nginx/conf.d
+      - name: nginx-container-2
+        image: nginx:1.21
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume-2
+          mountPath: /etc/nginx/conf.d
+      volumes:
+      - name: config-volume-1
+        configMap:
+          name: nginx-config-1
+      - name: config-volume-2
+        configMap:
+          name: nginx-config-2

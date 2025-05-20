@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch-kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch-kibana
+  template:
+    metadata:
+      labels:
+        app: elasticsearch-kibana
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.17.6
+          env:
+            - name: discovery.type
+              value: single-node
+            - name: ES_JAVA_OPTS
+              value: "-Xms512m -Xmx512m"
+            - name: xpack.security.enabled
+              value: "false"
+          ports:
+            - containerPort: 9200
+              name: http
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+        - name: kibana
+          image: docker.elastic.co/kibana/kibana:8.17.6
+          env:
+          - name: ELASTICSEARCH_HOSTS
+            value: http://localhost:9200
+          - name: KBN_OPTIMIZE_PREBOOT
+            value: "false"
+          ports:
+            - containerPort: 5601
+              name: http
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "250m"
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+
+
